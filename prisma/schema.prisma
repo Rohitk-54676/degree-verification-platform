@@ -1,0 +1,107 @@
+// DegreeVerify — Prisma schema
+// Database: PostgreSQL (Neon)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  UNIVERSITY
+  STUDENT
+}
+
+enum CredentialStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum AuditAction {
+  ISSUED
+  VERIFIED
+  REVOKED
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  name         String
+  role         Role
+  universityId String?
+  university   University?  @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  enrollmentNo String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([universityId])
+  @@index([role])
+}
+
+model University {
+  id             String       @id @default(cuid())
+  name           String       @unique
+  code           String       @unique
+  logoUrl        String?
+  sealUrl        String?
+  primaryColor   String       @default("#1e3a8a")
+  secondaryColor String       @default("#d4af37")
+  fontFamily     String       @default("serif")
+  borderStyle    String       @default("double")
+  registrarName  String?
+  motto          String?
+  address        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  users       User[]
+  credentials Credential[]
+}
+
+model Credential {
+  id            String           @id @default(cuid())
+  credentialId  String           @unique
+  studentName   String
+  enrollmentNo  String
+  degree        String
+  branch        String
+  yearOfPassing Int
+  cgpa          Float?
+  recordHash    String
+
+  status        CredentialStatus @default(ACTIVE)
+  issuedAt      DateTime         @default(now())
+  revokedAt     DateTime?
+  revokedReason String?
+  updatedAt     DateTime         @updatedAt
+
+  universityId  String
+  university    University       @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  auditLogs     AuditLog[]
+
+  @@unique([universityId, enrollmentNo, yearOfPassing])
+  @@index([universityId])
+  @@index([enrollmentNo])
+  @@index([status])
+}
+
+model AuditLog {
+  id           String      @id @default(cuid())
+  credentialId String
+  credential   Credential  @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  action       AuditAction
+  actor        String?
+  ip           String?
+  meta         Json?
+  createdAt    DateTime    @default(now())
+
+  @@index([credentialId])
+  @@index([action])
+  @@index([createdAt])
+}
