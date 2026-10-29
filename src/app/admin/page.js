@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 async function AdminContent() {
   const session = await auth();
+  if (!session || session.user.role !== "ADMIN") {
+    redirect("/");
+  }
 
   const [universityCount, userCount, credentialCount, recentUniversities] =
     await Promise.all([
@@ -27,14 +31,12 @@ async function AdminContent() {
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Universities" value={universityCount} />
         <StatCard label="Users" value={userCount} />
         <StatCard label="Credentials" value={credentialCount} />
       </div>
 
-      {/* Quick actions */}
       <div className="bg-white border border-slate-200 rounded-xl p-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
           Quick Actions
@@ -52,16 +54,9 @@ async function AdminContent() {
           >
             View All Universities
           </Link>
-          <Link
-            href="/admin/audit"
-            className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg text-sm"
-          >
-            Audit Log
-          </Link>
         </div>
       </div>
 
-      {/* Recent universities */}
       <div className="bg-white border border-slate-200 rounded-xl p-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
           Recent Universities

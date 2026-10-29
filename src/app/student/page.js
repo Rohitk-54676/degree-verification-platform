@@ -86,20 +86,19 @@ async function StudentContent() {
                 </div>
               </dl>
 
-              <div className="flex gap-2 mt-4">
+                            <div className="flex gap-2 mt-4">
                 <Link
-                  href={`/verify/${c.credentialId}`}
-                  className="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 rounded-lg text-sm"
+                  href={`/certificate/${c.credentialId}`}
+                  className="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 rounded-lg text-sm font-medium"
                 >
-                  View
+                  View Certificate
                 </Link>
-                <button
-                  disabled
-                  className="flex-1 bg-blue-600/50 text-white px-3 py-2 rounded-lg text-sm cursor-not-allowed"
-                  title="Coming soon"
+                <a
+                  href={`/api/certificate/${c.credentialId}/pdf`}
+                  className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium"
                 >
                   Download PDF
-                </button>
+                </a>
               </div>
             </div>
           ))}

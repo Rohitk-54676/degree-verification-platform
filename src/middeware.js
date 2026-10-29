@@ -1,11 +1,17 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
+
+const { auth } = NextAuth(authConfig);
 
 const ROLE_ROUTES = {
   "/admin": "ADMIN",
   "/issuer": "UNIVERSITY",
   "/student": "STUDENT",
 };
+
+// Routes accessible to ANY authenticated user (no specific role required)
+const AUTHED_ONLY_ROUTES = ["/account", "/certificate"];
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
@@ -28,10 +34,17 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Role-specific routes
   for (const [prefix, requiredRole] of Object.entries(ROLE_ROUTES)) {
     if (pathname.startsWith(prefix) && session.user.role !== requiredRole) {
       return NextResponse.redirect(new URL("/", req.url));
     }
+  }
+
+  // Auth-only routes (any role can access)
+  const isAuthedOnly = AUTHED_ONLY_ROUTES.some((p) => pathname.startsWith(p));
+  if (isAuthedOnly) {
+    return NextResponse.next();
   }
 
   return NextResponse.next();
