@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import PasswordForm from "./form";
 
 async function AuthGuard() {
+  await connection();
   const session = await auth();
   if (!session) {
     redirect("/login");

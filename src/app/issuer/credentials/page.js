@@ -68,13 +68,29 @@ async function CredentialsContent() {
                   <td className="px-5 py-3">
                     <StatusBadge status={c.status} />
                   </td>
-                  <td className="px-5 py-3 text-right">
-                    <Link
-                      href={`/certificate/${c.credentialId}`}
-                      className="text-blue-600 hover:underline text-xs font-medium"
-                    >
-                      View →
-                    </Link>
+                  <td className="px-5 py-3 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-2 text-xs">
+                      <Link
+                        href={`/certificate/${c.credentialId}`}
+                        className="text-blue-600 hover:underline font-medium"
+                      >
+                        View
+                      </Link>
+                      <span className="text-slate-300">|</span>
+                      <a
+                        href={`/api/certificate/${c.credentialId}/pdf`}
+                        className="text-blue-600 hover:underline font-medium"
+                      >
+                        Download
+                      </a>
+                      <span className="text-slate-300">|</span>
+                      <Link
+                        href={`/issuer/credentials/${c.credentialId}/edit`}
+                        className="text-slate-700 hover:underline font-medium"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}

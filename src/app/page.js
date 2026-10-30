@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { auth } from "@/lib/auth";
 
-// This is a Server Component that reads the session.
-// It's wrapped in <Suspense> below so the static shell can prerender.
 async function SessionInfo() {
+  await connection();
   const session = await auth();
 
   if (!session) {
