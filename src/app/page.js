@@ -1,70 +1,60 @@
-import Link from "next/link";
 import { Suspense } from "react";
-import { connection } from "next/server";
-import { auth } from "@/lib/auth";
-
-async function SessionInfo() {
-  await connection();
-  const session = await auth();
-
-  if (!session) {
-    return (
-      <div className="space-y-3">
-        <p className="text-slate-700">You are not logged in.</p>
-        <Link
-          href="/login"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-        >
-          Go to Login
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-        <p className="font-medium text-green-800">
-          Logged in as: {session.user.email}
-        </p>
-        <p className="text-sm text-green-700">Role: {session.user.role}</p>
-        {session.user.enrollmentNo && (
-          <p className="text-sm text-green-700">
-            Enrollment: {session.user.enrollmentNo}
-          </p>
-        )}
-      </div>
-      <Link
-        href="/api/auth/signout"
-        className="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-      >
-        Sign Out
-      </Link>
-    </div>
-  );
-}
-
-function SessionSkeleton() {
-  return (
-    <div className="space-y-3">
-      <div className="h-20 bg-slate-100 rounded-lg animate-pulse" />
-      <div className="h-10 w-32 bg-slate-100 rounded-lg animate-pulse" />
-    </div>
-  );
-}
+import Navbar from "@/components/landing/Navbar";
+import Hero from "@/components/landing/Hero";
+import TrustStats from "@/components/landing/TrustStats";
+import HowItWorks from "@/components/landing/HowItWorks";
+import ContactSection from "@/components/landing/ContactSection";
+import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-4">
-          DegreeVerify — Temporary Home
-        </h1>
-
-        <Suspense fallback={<SessionSkeleton />}>
-          <SessionInfo />
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+      <Navbar />
+      
+      <main className="flex-1">
+        <Hero />
+        
+        {/* Wrap the DB fetch in Suspense so the page shell loads instantly */}
+        <Suspense
+          fallback={
+            <div className="h-32 bg-slate-50 border-y border-slate-200 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }
+        >
+          <TrustStats />
         </Suspense>
-      </div>
+
+        <HowItWorks />
+        <ContactSection /> 
+        {/* CTA Section */}
+        <section id="features" className="py-24 bg-blue-600">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Ready to secure your institution's degrees?
+            </h2>
+            <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">
+              Join the platform that makes verification instant and forgery impossible.
+            </p>
+            <div className="flex justify-center gap-4">
+              <a
+                href="/login"
+                className="bg-white text-blue-600 hover:bg-slate-50 px-8 py-3.5 rounded-xl font-bold shadow-xl transition-all hover:-translate-y-0.5"
+              >
+                Login to Portal
+              </a>
+              <a
+                href="/verify"
+                className="bg-blue-700 text-white hover:bg-blue-800 border border-blue-500 px-8 py-3.5 rounded-xl font-bold transition-all"
+              >
+                Verify a Degree
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

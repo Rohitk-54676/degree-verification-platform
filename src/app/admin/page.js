@@ -54,6 +54,18 @@ async function AdminContent() {
           >
             View All Universities
           </Link>
+          <Link
+            href="/admin/audit"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Audit Log
+          </Link>
+          <Link
+            href="/admin/inquiries"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            inquiries
+          </Link>
         </div>
       </div>
 

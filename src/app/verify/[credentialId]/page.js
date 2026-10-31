@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { verifyCredentialById } from "@/lib/verify";
 import StatusCard from "./status-card";
+import VerifyAnother from "./verify-another";
 
 export const instant = false;
-// export const dynamic = "force-dynamic";
 
 export default async function VerifyPage({ params }) {
   const { credentialId } = await params;
@@ -35,7 +35,7 @@ export default async function VerifyPage({ params }) {
 
         {/* Certificate details (if found) */}
         {credential && status !== "NOT_FOUND" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm">
             <div className="flex items-center gap-3">
               <div
                 className="w-14 h-14 rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
@@ -60,13 +60,8 @@ export default async function VerifyPage({ params }) {
               <Row label="Enrollment No" value={credential.enrollmentNo} mono />
               <Row label="Degree" value={credential.degree} />
               <Row label="Branch" value={credential.branch} />
-              <Row
-                label="Year of Passing"
-                value={credential.yearOfPassing}
-              />
-              {credential.cgpa && (
-                <Row label="CGPA" value={credential.cgpa} />
-              )}
+              <Row label="Year of Passing" value={credential.yearOfPassing} />
+              {credential.cgpa && <Row label="CGPA" value={credential.cgpa} />}
               <Row
                 label="Issued On"
                 value={new Date(credential.issuedAt).toLocaleDateString()}
@@ -88,29 +83,15 @@ export default async function VerifyPage({ params }) {
               <p>
                 <span className="font-medium">SHA-256 Hash:</span>
               </p>
-              <p className="font-mono break-all">{credential.recordHash}</p>
+              <p className="font-mono break-all text-[10px]">
+                {credential.recordHash}
+              </p>
             </div>
           </div>
         )}
 
-        {/* Not found help */}
-        {status === "NOT_FOUND" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-6 text-center">
-            <p className="text-slate-600">
-              This credential ID does not exist in our system.
-            </p>
-            <p className="text-sm text-slate-500 mt-2">
-              Check that the ID was entered correctly. It should look like{" "}
-              <span className="font-mono">LPU-2026-000001</span>.
-            </p>
-            <Link
-              href="/verify"
-              className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-            >
-              Try another ID
-            </Link>
-          </div>
-        )}
+        {/* Verify Another Component */}
+        <VerifyAnother />
 
         {/* Footer */}
         <div className="text-center text-xs text-slate-500 pt-4">

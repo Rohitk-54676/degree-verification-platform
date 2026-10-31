@@ -44,7 +44,7 @@ export default function VerifyEntryPage() {
               value={credentialId}
               onChange={(e) => setCredentialId(e.target.value)}
               placeholder="LPU-2026-000001"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
               autoFocus
             />
             <p className="text-xs text-slate-500 mt-1">

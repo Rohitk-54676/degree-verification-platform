@@ -105,3 +105,12 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
 }
+model Inquiry {
+  id            String   @id @default(cuid())
+  university    String
+  contactName   String
+  email         String
+  message       String?
+  status        String   @default("PENDING") // PENDING, CONTACTED, ARCHIVED
+  createdAt     DateTime @default(now())
+}
